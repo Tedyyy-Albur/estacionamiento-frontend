@@ -1,0 +1,70 @@
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.placa-container {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.placa-badge-lg {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 26px;
+  font-weight: 800;
+  background: #1e293b;
+  color: #fbbf24;
+  padding: 10px 24px;
+  border-radius: 8px;
+  letter-spacing: 2px;
+  border: 2px solid #000;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.divider-spacing {
+  margin: 16px 0;
+}
+
+.info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+
+  .info-label {
+    font-weight: 600;
+    color: #64748b;
+  }
+
+  .info-value {
+    font-size: 14px;
+    color: #1e293b;
+    text-align: right;
+  }
+}
+
+.dialog-actions {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  button {
+    border-radius: 20px;
+    font-weight: 600;
+
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+}

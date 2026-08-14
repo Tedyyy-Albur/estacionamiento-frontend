@@ -1,0 +1,131 @@
+<div *ngIf="!resultadoSalida">
+  <div *ngIf="esConfirmacion">
+    <h2 mat-dialog-title class="dialog-title">
+      <mat-icon color="warn">logout</mat-icon>
+      Confirmar Registro de Salida
+    </h2>
+
+    <mat-dialog-content class="dialog-content text-center">
+      <p class="confirm-question">
+        ¿Quieres registrar la salida del vehículo?
+      </p>
+      <div class="placa-highlight">
+        <span class="placa-badge-lg">{{ placaConfirmacion }}</span>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="dialog-actions">
+      <button mat-stroked-button type="button" (click)="cerrar(false)" [disabled]="loading">
+        No, Cancelar
+      </button>
+      <button mat-raised-button color="warn" type="button" (click)="confirmarSalidaDirecta()" [disabled]="loading">
+        <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+        <span *ngIf="!loading">Sí, Registrar Salida</span>
+      </button>
+    </mat-dialog-actions>
+  </div>
+
+  <div *ngIf="!esConfirmacion">
+    <h2 mat-dialog-title class="dialog-title">
+      <mat-icon color="warn">logout</mat-icon>
+      Registrar Salida de Vehículo
+    </h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-dialog-content class="dialog-content">
+        <p class="instruction-text">
+          Seleccione o busque el vehículo actualmente dentro del estacionamiento para registrar su salida.
+        </p>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Placa del Vehículo</mat-label>
+          <input
+            matInput
+            formControlName="placa"
+            [matAutocomplete]="auto"
+            placeholder="Buscar o seleccionar vehículo (ej: ABC-123)"
+            style="text-transform: uppercase;"
+            maxLength="10"
+          />
+          <mat-icon matPrefix>directions_car</mat-icon>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="seleccionarPlaca($event.option.value)">
+            <mat-option *ngFor="let veh of vehiculosFiltrados" [value]="veh.placa">
+              <strong>{{ veh.placa }}</strong> — <small>{{ veh.tipoVehiculo }}</small>
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="form.get('placa')?.hasError('required')">
+            La placa es obligatoria.
+          </mat-error>
+          <mat-error *ngIf="form.get('placa')?.hasError('pattern')">
+            Formato de placa inválido (de 3 a 10 caracteres alfanuméricos).
+          </mat-error>
+        </mat-form-field>
+      </mat-dialog-content>
+
+      <mat-dialog-actions align="end" class="dialog-actions">
+        <button mat-stroked-button type="button" (click)="cerrar(false)" [disabled]="loading">
+          Cancelar
+        </button>
+        <button mat-raised-button color="warn" type="submit" [disabled]="loading || form.invalid">
+          <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+          <span *ngIf="!loading">Registrar Salida</span>
+        </button>
+      </mat-dialog-actions>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="resultadoSalida" class="ticket-container">
+  <h2 mat-dialog-title class="dialog-title text-success">
+    <mat-icon color="primary">receipt_long</mat-icon>
+    Comprobante de Salida
+  </h2>
+
+  <mat-dialog-content class="dialog-content">
+    <div class="ticket-card">
+      <div class="ticket-header">
+        <span class="ticket-placa">{{ resultadoSalida.placa }}</span>
+        <span
+          class="badge-tipo"
+          [ngClass]="{
+            'badge-oficial': resultadoSalida.tipoVehiculo === 'OFICIAL',
+            'badge-residente': resultadoSalida.tipoVehiculo === 'RESIDENTE',
+            'badge-no-residente': resultadoSalida.tipoVehiculo === 'NO_RESIDENTE'
+          }"
+        >
+          {{ resultadoSalida.tipoVehiculo }}
+        </span>
+      </div>
+
+      <div class="ticket-details">
+        <div class="detail-row">
+          <span>Tiempo Transcurrido:</span>
+          <strong>{{ resultadoSalida.minutosTranscurridos || 0 }} minutos</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Fecha/Hora Entrada:</span>
+          <span>{{ resultadoSalida.fechaHoraEntrada | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+
+        <div class="detail-row" *ngIf="resultadoSalida.fechaHoraSalida">
+          <span>Fecha/Hora Salida:</span>
+          <span>{{ resultadoSalida.fechaHoraSalida | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="monto-total-row">
+          <span>Monto Total a Cobrar:</span>
+          <span class="monto-total">{{ (resultadoSalida.montoCobrado || 0) | currency:'USD':'symbol':'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-raised-button class="btn-primary-action" (click)="cerrar(true)">
+      Aceptar y Cerrar
+    </button>
+  </mat-dialog-actions>
+</div>

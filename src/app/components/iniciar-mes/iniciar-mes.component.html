@@ -1,0 +1,25 @@
+<h2 mat-dialog-title class="dialog-title text-warn">
+  <mat-icon color="warn">warning</mat-icon>
+  Reiniciar Mes de Estacionamiento
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <div class="warning-box">
+    <p>
+      Esta acción reseteará los tiempos acumulados de todos los vehículos residentes a 0 minutos y limpiará los registros de estancias del mes anterior.
+    </p>
+    <p class="warning-subtitle">
+      ¿Está seguro de que desea iniciar un nuevo mes? Esta operación no se puede deshacer.
+    </p>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-stroked-button (click)="cancelar()" [disabled]="loading">
+    Cancelar
+  </button>
+  <button mat-raised-button color="warn" (click)="confirmar()" [disabled]="loading">
+    <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+    <span *ngIf="!loading">Sí, Reiniciar Mes</span>
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,67 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon color="primary">directions_car</mat-icon>
+  Detalle del Vehículo
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <div class="placa-container">
+    <span class="placa-badge-lg">{{ vehiculo.placa }}</span>
+  </div>
+
+  <mat-divider class="divider-spacing"></mat-divider>
+
+  <div class="info-group">
+    <div class="info-row">
+      <span class="info-label">Tipo de Vehículo:</span>
+      <span
+        class="badge-tipo"
+        [ngClass]="{
+          'badge-oficial': vehiculo.tipoVehiculo === 'OFICIAL',
+          'badge-residente': vehiculo.tipoVehiculo === 'RESIDENTE',
+          'badge-no-residente': vehiculo.tipoVehiculo === 'NO_RESIDENTE'
+        }"
+      >
+        {{ vehiculo.tipoVehiculo }}
+      </span>
+    </div>
+
+    <div class="info-row">
+      <span class="info-label">Estado Actual:</span>
+      <span
+        class="status-chip"
+        [ngClass]="{
+          'status-adentro': vehiculo.estaAdentro,
+          'status-afuera': !vehiculo.estaAdentro
+        }"
+      >
+        <mat-icon class="status-icon">{{ vehiculo.estaAdentro ? 'check_circle' : 'cancel' }}</mat-icon>
+        {{ vehiculo.estaAdentro ? 'ADENTRO' : 'AFUERA' }}
+      </span>
+    </div>
+
+    <div class="info-row">
+      <span class="info-label">Esquema de Cobro:</span>
+      <span class="info-value">{{ getTarifaTexto() }}</span>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-stroked-button (click)="cerrar()">Cerrar</button>
+  <button
+    *ngIf="!vehiculo.estaAdentro"
+    mat-raised-button
+    color="accent"
+    (click)="openEntrada()"
+  >
+    <mat-icon>login</mat-icon> Registrar Entrada
+  </button>
+  <button
+    *ngIf="vehiculo.estaAdentro"
+    mat-raised-button
+    color="warn"
+    (click)="openSalida()"
+  >
+    <mat-icon>logout</mat-icon> Registrar Salida
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,121 @@
+@import '../../../styles/variables';
+
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  background: var(--secondary-color) !important;
+  color: var(--white-color);
+  height: 70px;
+  box-shadow: 0 4px 20px rgba(7, 37, 46, 0.15);
+
+  .toolbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    margin-right: 32px;
+
+    .brand-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      color: var(--primary-color);
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--white-color);
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 10px;
+
+    a {
+      color: #94a3b8;
+      border-radius: 20px;
+      padding: 0 16px;
+      height: 40px;
+      line-height: 40px;
+      transition: all 0.25s ease;
+
+      mat-icon {
+        margin-right: 6px;
+      }
+
+      &:hover {
+        color: var(--white-color);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      &.active-link {
+        color: var(--white-color);
+        background: var(--primary-color);
+        font-weight: 700;
+
+        mat-icon {
+          color: var(--white-color);
+        }
+      }
+    }
+  }
+
+  .toolbar-spacer {
+    flex: 1 1 auto;
+  }
+
+  .action-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .btn-primary-action {
+      background-color: var(--primary-color) !important;
+      color: var(--white-color) !important;
+      border-radius: 24px;
+      font-weight: 700;
+
+      mat-icon {
+        margin-right: 4px;
+      }
+    }
+
+    .btn-outline-light {
+      color: var(--white-color);
+      border-color: rgba(255, 255, 255, 0.4);
+      border-radius: 24px;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .app-toolbar {
+    padding: 0 12px;
+    height: auto;
+    min-height: 64px;
+    flex-wrap: wrap;
+
+    .toolbar-brand .brand-title {
+      font-size: 16px;
+    }
+
+    .nav-links span {
+      display: none;
+    }
+
+    .action-bar .btn-action span {
+      display: none;
+    }
+  }
+}

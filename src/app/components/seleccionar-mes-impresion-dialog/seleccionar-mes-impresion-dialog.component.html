@@ -1,0 +1,65 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon color="primary">print</mat-icon>
+  Seleccionar Mes para Imprimir Informe
+</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="dialog-content">
+    <p class="instruction-text">
+      Elija si desea imprimir el reporte en curso del mes actual o buscar un respaldo histórico previo.
+    </p>
+
+    <div class="radio-options">
+      <mat-radio-group formControlName="tipoReporte" class="radio-group">
+        <mat-radio-button value="ACTUAL" color="primary">
+          <strong>Mes Actual (En Curso)</strong>
+        </mat-radio-button>
+
+        <mat-radio-button value="HISTORICO" color="primary">
+          <strong>Buscar Mes Histórico Respaldado</strong>
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div *ngIf="form.get('tipoReporte')?.value === 'HISTORICO'" class="selectors-container">
+      <div class="form-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Mes</mat-label>
+          <mat-select formControlName="mes">
+            <mat-option *ngFor="let m of meses" [value]="m.id">
+              {{ m.nombre }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>calendar_month</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Año</mat-label>
+          <mat-select formControlName="anio">
+            <mat-option *ngFor="let a of anios" [value]="a">
+              {{ a }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>event</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-banner">
+      <mat-icon color="warn">error_outline</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-stroked-button type="button" (click)="cancelar()" [disabled]="loading">
+      Cancelar
+    </button>
+    <button mat-raised-button class="btn-primary-action" type="submit" [disabled]="loading">
+      <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+      <span *ngIf="!loading">
+        <mat-icon>print</mat-icon> Buscar e Imprimir
+      </span>
+    </button>
+  </mat-dialog-actions>
+</form>

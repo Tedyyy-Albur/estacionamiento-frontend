@@ -1,0 +1,195 @@
+<div class="main-container">
+  <div class="page-header">
+    <div class="page-title">
+      <mat-icon>history</mat-icon>
+      <h2>Historial de Estancias del Estacionamiento</h2>
+    </div>
+
+    <div class="header-actions">
+      <button mat-raised-button class="btn-primary-action" (click)="cargarEstancias()">
+        <mat-icon>refresh</mat-icon> Actualizar Historial
+      </button>
+    </div>
+  </div>
+
+  <div class="summary-cards-grid">
+    <mat-card class="metric-card shadow-sm">
+      <mat-card-content class="metric-content">
+        <div class="metric-icon-bg icon-blue">
+          <mat-icon>history</mat-icon>
+        </div>
+        <div class="metric-details">
+          <span class="metric-label">Estancias Registradas</span>
+          <span class="metric-value">{{ totalEstancias }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card shadow-sm">
+      <mat-card-content class="metric-content">
+        <div class="metric-icon-bg icon-amber">
+          <mat-icon>pending_actions</mat-icon>
+        </div>
+        <div class="metric-details">
+          <span class="metric-label">Estancias En Curso</span>
+          <span class="metric-value">{{ estanciasActivas }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="metric-card shadow-sm">
+      <mat-card-content class="metric-content">
+        <div class="metric-icon-bg icon-green">
+          <mat-icon>payments</mat-icon>
+        </div>
+        <div class="metric-details">
+          <span class="metric-label">Total Recaudado</span>
+          <span class="metric-value currency-format">{{ totalRecaudado | currency:'USD':'symbol':'1.2-2' }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="glass-card">
+    <div class="filter-section">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Filtrar por Placa</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          [value]="filterValue"
+          (keyup)="aplicarFiltro($event)"
+          placeholder="Ej: ABC-123"
+          maxLength="10"
+        />
+        <button *ngIf="filterValue" matSuffix mat-icon-button (click)="limpiarFiltro()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <div class="table-container mat-elevation-z1">
+      <div class="spinner-overlay" *ngIf="loading">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+
+      <table mat-table [dataSource]="dataSource" matSort class="full-width">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header># ID</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="id-cell">#{{ element.id }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="placa">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Placa</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="placa-badge">{{ element.placa }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="tipoVehiculo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</th>
+          <td mat-cell *matCellDef="let element">
+            <span
+              class="badge-tipo"
+              [ngClass]="{
+                'badge-oficial': element.tipoVehiculo === 'OFICIAL',
+                'badge-residente': element.tipoVehiculo === 'RESIDENTE',
+                'badge-no-residente': element.tipoVehiculo === 'NO_RESIDENTE'
+              }"
+            >
+              {{ element.tipoVehiculo }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaHoraEntrada">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Entrada</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.fechaHoraEntrada | date:'dd/MM/yyyy HH:mm' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaHoraSalida">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Salida</th>
+          <td mat-cell *matCellDef="let element">
+            <span *ngIf="element.fechaHoraSalida">
+              {{ element.fechaHoraSalida | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+            <span *ngIf="!element.fechaHoraSalida" class="badge-en-curso">
+              En curso
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="minutosTranscurridos">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Minutos</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element.minutosTranscurridos ? element.minutosTranscurridos + ' min' : '-' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoCobrado">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Monto</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="currency-format">
+              {{ (element.montoCobrado || 0) | currency:'USD':'symbol':'1.2-2' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="activa">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+          <td mat-cell *matCellDef="let element">
+            <span
+              class="status-chip"
+              [ngClass]="{
+                'status-adentro': element.activa,
+                'status-afuera': !element.activa
+              }"
+            >
+              <mat-icon class="status-icon">{{ element.activa ? 'play_circle' : 'check_circle' }}</mat-icon>
+              {{ element.activa ? 'EN CURSO' : 'FINALIZADA' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="text-right">Acciones</th>
+          <td mat-cell *matCellDef="let element" class="text-right">
+            <button
+              *ngIf="element.activa"
+              mat-icon-button
+              color="warn"
+              (click)="openRegistrarSalida(element.placa)"
+              matTooltip="Registrar Salida"
+            >
+              <mat-icon>logout</mat-icon>
+            </button>
+            <span *ngIf="!element.activa" class="text-muted-sm">-</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell empty-table" colspan="9">
+            <div class="empty-state" *ngIf="!loading">
+              <mat-icon>history</mat-icon>
+              <p *ngIf="filterValue">No se encontraron estancias con la placa "{{ filterValue }}"</p>
+              <p *ngIf="!filterValue">No hay estancias registradas en el historial actualmente.</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 20, 50]"
+        showFirstLastButtons
+        aria-label="Seleccionar página de estancias"
+      ></mat-paginator>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div *ngIf="esConfirmacion">
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon color="accent">login</mat-icon>
+    Confirmar Registro de Entrada
+  </h2>
+
+  <mat-dialog-content class="dialog-content text-center">
+    <p class="confirm-question">
+      ¿Quieres registrar la entrada del vehículo?
+    </p>
+    <div class="placa-highlight">
+      <span class="placa-badge-lg">{{ placaConfirmacion }}</span>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-stroked-button type="button" (click)="cancelar()" [disabled]="loading">
+      No, Cancelar
+    </button>
+    <button mat-raised-button class="btn-primary-action" type="button" (click)="confirmarEntradaDirecta()" [disabled]="loading">
+      <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+      <span *ngIf="!loading">Sí, Registrar Entrada</span>
+    </button>
+  </mat-dialog-actions>
+</div>
+
+<div *ngIf="!esConfirmacion">
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon color="accent">login</mat-icon>
+    Registrar Entrada de Vehículo
+  </h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-dialog-content class="dialog-content">
+      <p class="instruction-text">
+        Seleccione o ingrese la placa del vehículo para registrar su entrada al estacionamiento.
+      </p>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Placa del Vehículo</mat-label>
+        <input
+          matInput
+          formControlName="placa"
+          [matAutocomplete]="auto"
+          placeholder="Buscar o escribir placa (ej: ABC-123)"
+          style="text-transform: uppercase;"
+          maxLength="10"
+        />
+        <mat-icon matPrefix>directions_car</mat-icon>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="seleccionarPlaca($event.option.value)">
+          <mat-option *ngFor="let veh of vehiculosFiltrados" [value]="veh.placa">
+            <strong>{{ veh.placa }}</strong> — <small>{{ veh.tipoVehiculo }}</small>
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="form.get('placa')?.hasError('required')">
+          La placa es obligatoria.
+        </mat-error>
+        <mat-error *ngIf="form.get('placa')?.hasError('pattern')">
+          Formato de placa inválido (de 3 a 10 caracteres alfanuméricos).
+        </mat-error>
+      </mat-form-field>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="dialog-actions">
+      <button mat-stroked-button type="button" (click)="cancelar()" [disabled]="loading">
+        Cancelar
+      </button>
+      <button mat-raised-button class="btn-primary-action" type="submit" [disabled]="loading || form.invalid">
+        <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+        <span *ngIf="!loading">Registrar Entrada</span>
+      </button>
+    </mat-dialog-actions>
+  </form>
+</div>

@@ -1,0 +1,26 @@
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.warning-box {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 16px;
+  color: #991b1b;
+  font-size: 14px;
+  line-height: 1.5;
+
+  .warning-subtitle {
+    margin-top: 8px;
+    font-weight: 600;
+  }
+}
+
+.dialog-actions {
+  padding: 16px 24px;
+  gap: 8px;
+}

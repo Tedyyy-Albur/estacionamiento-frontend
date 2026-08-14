@@ -1,0 +1,67 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon color="primary">add_circle_outline</mat-icon>
+  Alta de Nuevo Vehículo
+</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="dialog-content">
+    <p class="instruction-text">
+      Registre un nuevo vehículo en el sistema indicando su placa y la categoría correspondiente.
+    </p>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Placa del Vehículo</mat-label>
+      <input
+        matInput
+        formControlName="placa"
+        placeholder="Ej: ABC-123"
+        style="text-transform: uppercase;"
+        maxLength="10"
+      />
+      <mat-icon matPrefix>directions_car</mat-icon>
+      <mat-error *ngIf="form.get('placa')?.hasError('required')">
+        La placa es obligatoria.
+      </mat-error>
+      <mat-error *ngIf="form.get('placa')?.hasError('pattern')">
+        Formato de placa inválido (3 a 10 caracteres alfanuméricos).
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tipo de Vehículo</mat-label>
+      <mat-select formControlName="tipoVehiculo">
+        <mat-option *ngFor="let item of tiposVehiculo" [value]="item.value">
+          {{ item.label }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>category</mat-icon>
+    </mat-form-field>
+
+    <div class="tipo-info-box" *ngIf="form.get('tipoVehiculo')?.value">
+      <ng-container [ngSwitch]="form.get('tipoVehiculo')?.value">
+        <div *ngSwitchCase="'RESIDENTE'" class="info-alert info-residente">
+          <mat-icon>home</mat-icon>
+          <span>Vehículo Residente: Se registrarán sus minutos de estancia y se cobrarán $0.05/min al corte del mes.</span>
+        </div>
+        <div *ngSwitchCase="'OFICIAL'" class="info-alert info-oficial">
+          <mat-icon>verified_user</mat-icon>
+          <span>Vehículo Oficial: Exento de tarifa de estacionamiento.</span>
+        </div>
+        <div *ngSwitchCase="'NO_RESIDENTE'" class="info-alert info-no-residente">
+          <mat-icon>directions_car</mat-icon>
+          <span>Vehículo No Residente: Deberá pagar tarifa estándar al registrar salida.</span>
+        </div>
+      </ng-container>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-stroked-button type="button" (click)="cancelar()" [disabled]="loading">
+      Cancelar
+    </button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="loading || form.invalid">
+      <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+      <span *ngIf="!loading">Dar de Alta</span>
+    </button>
+  </mat-dialog-actions>
+</form>

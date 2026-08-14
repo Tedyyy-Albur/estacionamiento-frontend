@@ -1,0 +1,129 @@
+<div class="main-container">
+  <div class="page-header">
+    <div class="page-title">
+      <mat-icon>directions_car</mat-icon>
+      <h2>Control de Vehículos Registrados</h2>
+    </div>
+
+    <div class="header-actions">
+      <button mat-icon-button color="primary" (click)="cargarVehiculos()" matTooltip="Actualizar lista">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="glass-card">
+    <div class="filter-section">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar por Placa</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          [value]="filterValue"
+          (keyup)="aplicarFiltro($event)"
+          placeholder="Ej: ABC-123"
+          maxLength="10"
+        />
+        <button *ngIf="filterValue" matSuffix mat-icon-button (click)="limpiarFiltro()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <div class="table-container mat-elevation-z1">
+      <div class="spinner-overlay" *ngIf="loading">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+
+      <table mat-table [dataSource]="dataSource" matSort class="full-width">
+        <ng-container matColumnDef="placa">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Placa del Vehículo</th>
+          <td mat-cell *matCellDef="let element">
+            <span class="placa-badge">{{ element.placa }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="tipoVehiculo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo de Vehículo</th>
+          <td mat-cell *matCellDef="let element">
+            <span
+              class="badge-tipo"
+              [ngClass]="{
+                'badge-oficial': element.tipoVehiculo === 'OFICIAL',
+                'badge-residente': element.tipoVehiculo === 'RESIDENTE',
+                'badge-no-residente': element.tipoVehiculo === 'NO_RESIDENTE'
+              }"
+            >
+              <mat-icon class="badge-icon" *ngIf="element.tipoVehiculo === 'OFICIAL'">verified_user</mat-icon>
+              <mat-icon class="badge-icon" *ngIf="element.tipoVehiculo === 'RESIDENTE'">home</mat-icon>
+              <mat-icon class="badge-icon" *ngIf="element.tipoVehiculo === 'NO_RESIDENTE'">directions_car</mat-icon>
+              {{ element.tipoVehiculo }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estaAdentro">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+          <td mat-cell *matCellDef="let element">
+            <span
+              class="status-chip"
+              [ngClass]="{
+                'status-adentro': element.estaAdentro,
+                'status-afuera': !element.estaAdentro
+              }"
+            >
+              <mat-icon class="status-icon">{{ element.estaAdentro ? 'check_circle' : 'cancel' }}</mat-icon>
+              {{ element.estaAdentro ? 'ADENTRO' : 'AFUERA' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="text-right">Acciones</th>
+          <td mat-cell *matCellDef="let element" class="text-right">
+            <button mat-icon-button color="primary" (click)="verDetalle(element)" matTooltip="Ver Detalle">
+              <mat-icon>info</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="accent"
+              [disabled]="element.estaAdentro"
+              (click)="openRegistrarEntrada(element.placa)"
+              [matTooltip]="element.estaAdentro ? 'El vehículo ya está adentro' : 'Registrar Entrada'"
+            >
+              <mat-icon>login</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              [disabled]="!element.estaAdentro"
+              (click)="openRegistrarSalida(element.placa)"
+              [matTooltip]="!element.estaAdentro ? 'El vehículo no está adentro' : 'Registrar Salida'"
+            >
+              <mat-icon>logout</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell empty-table" colspan="4">
+            <div class="empty-state" *ngIf="!loading">
+              <mat-icon>directions_car_filled</mat-icon>
+              <p *ngIf="filterValue">No se encontraron vehículos que coincidan con "{{ filterValue }}"</p>
+              <p *ngIf="!filterValue">No hay vehículos registrados en el sistema actualmente.</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 20, 50]"
+        showFirstLastButtons
+        aria-label="Seleccionar página de vehículos"
+      ></mat-paginator>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.instruction-text {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.dialog-actions {
+  padding: 16px 24px;
+  gap: 8px;
+
+  button {
+    min-width: 120px;
+  }
+}
+
+.tipo-info-box {
+  margin-top: 8px;
+}
+
+.info-alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &.info-residente {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+
+  &.info-oficial {
+    background: #f0f9ff;
+    color: #075985;
+    border: 1px solid #bae6fd;
+  }
+
+  &.info-no-residente {
+    background: #fff1f2;
+    color: #9f1239;
+    border: 1px solid #fecdd3;
+  }
+}

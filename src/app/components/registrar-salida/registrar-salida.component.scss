@@ -1,0 +1,100 @@
+@import '../../../styles/variables';
+
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.instruction-text {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.confirm-question {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--secondary-color);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.placa-highlight {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.placa-badge-lg {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 24px;
+  font-weight: 800;
+  background: var(--secondary-color);
+  color: #ffc107;
+  padding: 8px 20px;
+  border-radius: 8px;
+  letter-spacing: 2px;
+  border: 2px solid var(--primary-color);
+}
+
+.dialog-actions {
+  padding: 16px 24px;
+  gap: 8px;
+
+  button {
+    min-width: 120px;
+  }
+}
+
+.ticket-card {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.ticket-placa {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--secondary-color);
+}
+
+.ticket-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.monto-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--secondary-color);
+
+  .monto-total {
+    font-size: 24px;
+    color: var(--primary-color);
+    font-family: 'Roboto Mono', monospace;
+  }
+}
