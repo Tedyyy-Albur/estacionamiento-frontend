@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, Subject, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import {
   ApiResponse,
   Vehiculo,
@@ -20,7 +20,14 @@ import {
 export class EstacionamientoService {
   private readonly baseUrl = 'http://localhost:8080/neo';
 
+  private vehiculosActualizadosSubject = new Subject<void>();
+  vehiculosActualizados$ = this.vehiculosActualizadosSubject.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  notificarCambioVehiculos(): void {
+    this.vehiculosActualizadosSubject.next();
+  }
 
   private sanitizePlaca(placa: string): string {
     if (!placa) return '';
@@ -35,36 +42,54 @@ export class EstacionamientoService {
   registrarResidente(placa: string): Observable<ApiResponse<Vehiculo>> {
     const payload: VehiculoRequestDTO = { placa: this.sanitizePlaca(placa) };
     return this.http.post<ApiResponse<Vehiculo>>(`${this.baseUrl}/vehiculos/residentes`, payload)
-      .pipe(catchError(this.handleError));
+      .pipe(
+        tap(() => this.notificarCambioVehiculos()),
+        catchError(this.handleError)
+      );
   }
 
   registrarOficial(placa: string): Observable<ApiResponse<Vehiculo>> {
     const payload: VehiculoRequestDTO = { placa: this.sanitizePlaca(placa) };
     return this.http.post<ApiResponse<Vehiculo>>(`${this.baseUrl}/vehiculos/oficiales`, payload)
-      .pipe(catchError(this.handleError));
+      .pipe(
+        tap(() => this.notificarCambioVehiculos()),
+        catchError(this.handleError)
+      );
   }
 
   registrarNoResidente(placa: string): Observable<ApiResponse<Vehiculo>> {
     const payload: VehiculoRequestDTO = { placa: this.sanitizePlaca(placa) };
     return this.http.post<ApiResponse<Vehiculo>>(`${this.baseUrl}/vehiculos/no-residentes`, payload)
-      .pipe(catchError(this.handleError));
+      .pipe(
+        tap(() => this.notificarCambioVehiculos()),
+        catchError(this.handleError)
+      );
   }
 
   registrarEntrada(placa: string): Observable<ApiResponse<EstanciaResponseDTO>> {
     const payload: EstanciaEntradaRequestDTO = { placa: this.sanitizePlaca(placa) };
     return this.http.post<ApiResponse<EstanciaResponseDTO>>(`${this.baseUrl}/estancias/entrada`, payload)
-      .pipe(catchError(this.handleError));
+      .pipe(
+        tap(() => this.notificarCambioVehiculos()),
+        catchError(this.handleError)
+      );
   }
 
   registrarSalida(placa: string): Observable<ApiResponse<EstanciaResponseDTO>> {
     const payload: EstanciaSalidaRequestDTO = { placa: this.sanitizePlaca(placa) };
     return this.http.post<ApiResponse<EstanciaResponseDTO>>(`${this.baseUrl}/estancias/salida`, payload)
-      .pipe(catchError(this.handleError));
+      .pipe(
+        tap(() => this.notificarCambioVehiculos()),
+        catchError(this.handleError)
+      );
   }
 
   iniciarNuevoMes(): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(`${this.baseUrl}/mes/iniciar`, {})
-      .pipe(catchError(this.handleError));
+      .pipe(
+        tap(() => this.notificarCambioVehiculos()),
+        catchError(this.handleError)
+      );
   }
 
   generarInformeResidentes(): Observable<ApiResponse<ReporteResidenteDTO[]>> {

@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
 import { EstacionamientoService } from '../../services/estacionamiento.service';
 import { Vehiculo } from '../../models/estacionamiento.models';
 import { VehiculoDetailComponent } from '../vehiculo-detail/vehiculo-detail.component';
@@ -17,11 +18,12 @@ import { IniciarMesComponent } from '../iniciar-mes/iniciar-mes.component';
   templateUrl: './vehiculo-list.component.html',
   styleUrls: ['./vehiculo-list.component.scss']
 })
-export class VehiculoListComponent implements OnInit, AfterViewInit {
+export class VehiculoListComponent implements OnInit, AfterViewInit, OnDestroy {
   displayedColumns: string[] = ['placa', 'tipoVehiculo', 'estaAdentro', 'acciones'];
   dataSource: MatTableDataSource<Vehiculo> = new MatTableDataSource<Vehiculo>([]);
   filterValue: string = '';
   loading: boolean = false;
+  private vehiculosSubscription?: Subscription;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -34,6 +36,15 @@ export class VehiculoListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.cargarVehiculos();
+    this.vehiculosSubscription = this.service.vehiculosActualizados$.subscribe(() => {
+      this.cargarVehiculos();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.vehiculosSubscription) {
+      this.vehiculosSubscription.unsubscribe();
+    }
   }
 
   ngAfterViewInit(): void {

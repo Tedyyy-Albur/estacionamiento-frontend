@@ -4,6 +4,7 @@ import { RegistrarEntradaComponent } from '../registrar-entrada/registrar-entrad
 import { RegistrarSalidaComponent } from '../registrar-salida/registrar-salida.component';
 import { AltaVehiculoComponent } from '../alta-vehiculo/alta-vehiculo.component';
 import { IniciarMesComponent } from '../iniciar-mes/iniciar-mes.component';
+import { EstacionamientoService } from '../../services/estacionamiento.service';
 
 @Component({
   selector: 'app-navbar',
@@ -11,21 +12,36 @@ import { IniciarMesComponent } from '../iniciar-mes/iniciar-mes.component';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-  constructor(private dialog: MatDialog) {}
+  constructor(
+    private dialog: MatDialog,
+    private service: EstacionamientoService
+  ) {}
 
   openRegistrarEntrada(): void {
-    this.dialog.open(RegistrarEntradaComponent, { width: '450px' });
+    const dialogRef = this.dialog.open(RegistrarEntradaComponent, { width: '450px' });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) this.service.notificarCambioVehiculos();
+    });
   }
 
   openRegistrarSalida(): void {
-    this.dialog.open(RegistrarSalidaComponent, { width: '450px' });
+    const dialogRef = this.dialog.open(RegistrarSalidaComponent, { width: '450px' });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) this.service.notificarCambioVehiculos();
+    });
   }
 
   openAltaVehiculo(): void {
-    this.dialog.open(AltaVehiculoComponent, { width: '450px' });
+    const dialogRef = this.dialog.open(AltaVehiculoComponent, { width: '450px' });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) this.service.notificarCambioVehiculos();
+    });
   }
 
   openIniciarMes(): void {
-    this.dialog.open(IniciarMesComponent, { width: '450px' });
+    const dialogRef = this.dialog.open(IniciarMesComponent, { width: '450px' });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) this.service.notificarCambioVehiculos();
+    });
   }
 }

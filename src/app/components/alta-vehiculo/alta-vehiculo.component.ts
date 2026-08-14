@@ -58,6 +58,7 @@ export class AltaVehiculoComponent implements OnInit {
     req$.subscribe({
       next: (res) => {
         this.loading = false;
+        this.service.notificarCambioVehiculos();
         this.snackBar.open(res.message || 'Vehículo dado de alta exitosamente', 'Aceptar', {
           duration: 4000,
           panelClass: ['snackbar-success']
